@@ -65,8 +65,21 @@ function getPromiseResult(source) {
  * [Promise.resolve(1), Promise.reject(2), Promise.resolve(3)]  => Promise fulfilled with 1
  * [Promise.reject(1), Promise.reject(2), Promise.reject(3)]    => Promise rejected
  */
-function getFirstResolvedPromiseResult(/* promises */) {
-  throw new Error('Not implemented');
+async function getFirstResolvedPromiseResult(promises) {
+  let firstResolved;
+  await promises.forEach((x) => {
+    x.then(
+      (value) => {
+        if (firstResolved === undefined) {
+          firstResolved = value;
+        }
+      },
+      () => {}
+    );
+  });
+  return new Promise((resolve) => {
+    resolve(firstResolved);
+  });
 }
 
 /**
